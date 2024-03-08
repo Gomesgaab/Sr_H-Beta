@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "255296517579",
+    "project_id": "sr-health",
+    "storage_bucket": "sr-health.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:255296517579:android:1fa732d32ddff4aedaf24e",
+        "android_client_info": {
+          "package_name": "app_srh.com.app_srh"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD1Wq6ShLNYMigeCzJuLCQj_Mi2TP7Wdww"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:255296517579:android:1800053fc415aa37daf24e",
+        "android_client_info": {
+          "package_name": "lab.sr_Health.com.flutter_srh_application"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD1Wq6ShLNYMigeCzJuLCQj_Mi2TP7Wdww"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
