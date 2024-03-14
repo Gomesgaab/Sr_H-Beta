@@ -1,31 +1,31 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_srh_application/pages/pagesLogin/login_page_Menu.dart';
-import 'package:flutter_srh_application/pages/pages_home/mainPage.dart';
+import 'package:flutter_srh_application/pages/pages_Atendente/page_Home/mainPageAtendent.dart';
+import 'package:flutter_srh_application/pages/pages_Enfermagem/page_home/mainPageEnferm.dart';
+import 'package:flutter_srh_application/pages/pages_Medico/page_home/mainPageMed.dart';
+import 'package:flutter_srh_application/pages/pages_triagem/page_home/mainPageTriagem.dart';
 import 'package:flutter_srh_application/service/authUser.dart';
 import 'package:flutter_srh_application/shared/componentes/snackbar.dart';
 
-class ConfirmarAtendente extends StatefulWidget {
-  const ConfirmarAtendente({super.key});
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
 
   @override
-  State<ConfirmarAtendente> createState() => _ConfirmarAtendenteState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
-class _ConfirmarAtendenteState extends State<ConfirmarAtendente> {
+class _LoginPageState extends State<LoginPage> {
   // iniciando intancia do fireBase
+  AutentificacaoUsuario _autenMedico = AutentificacaoUsuario();
   final db = FirebaseFirestore.instance;
-  var coremControler = TextEditingController();
-  //criando variavel de controle de e-mail
   var emailControler = TextEditingController();
-  //criando variavel de controle de senha
+  //criando variavel de controle de endereco
   var senhaControler = TextEditingController();
   bool isObscureText = true;
-  // variavel de controle de entrada
+  //variavel de ação do botão entrar
   bool queroEntrar = true;
   final _formKey = GlobalKey<FormState>();
-  AutentificacaoUsuario _autenEnfermagem = AutentificacaoUsuario();
-  // variavel de validação de email
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +43,7 @@ class _ConfirmarAtendenteState extends State<ConfirmarAtendente> {
               Container(
                 decoration: const BoxDecoration(
                     image: DecorationImage(
-                        image: AssetImage('asset/fundocadastro.png'),
+                        image: AssetImage('asset/loginUsuario.webp'),
                         fit: BoxFit.cover)),
                 child: ConstrainedBox(
                   constraints: BoxConstraints(
@@ -52,24 +52,6 @@ class _ConfirmarAtendenteState extends State<ConfirmarAtendente> {
                   ),
                   child: Column(
                     children: [
-                      Container(
-                        margin: const EdgeInsets.all(5),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            TextButton.icon(
-                              onPressed: () {},
-                              icon:
-                                  const Icon(color: Colors.black, Icons.clear),
-                              label: const Text(
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 20),
-                                  "Login Atendente"),
-                            ),
-                          ],
-                        ),
-                      ),
-
                       Container(
                         margin: const EdgeInsets.symmetric(vertical: 130),
                         width: double.infinity,
@@ -110,23 +92,20 @@ class _ConfirmarAtendenteState extends State<ConfirmarAtendente> {
                                         const EdgeInsets.only(top: 0, left: 20),
                                   ),
                                   //falidando campo
-                                  validator: (String? value) {
+                                  validator: (
+                                    String? value,
+                                  ) {
                                     if (value == null) {
                                       return "O em-mail não pode ser vazio";
                                     }
 
-                                    if (value.length< 5) {
+                                    if (value.length < 5) {
                                       return "E-mail deve conter mais de cinco caaracteres";
                                     }
                                     if (!value.contains("@")) {
                                       return "O e-mail informado não e valido";
                                     }
-                                    if (value.contains("medico") ){
-                                      return "O e-mail informado pertene a área de login do médico";
-                                    }
-                                    if (value.contains("enferm") ){
-                                      return "O e-mail informado pertence à área de enfermagem.";
-                                    }
+
                                     return null;
                                   },
                                 ),
@@ -185,7 +164,10 @@ class _ConfirmarAtendenteState extends State<ConfirmarAtendente> {
                                       label: const Text("Senha")),
                                   validator: (value) {
                                     if (value == null) {
-                                      return "a senha não pode conter menos de 6 caracteres";
+                                      return "a senha não pode ser vazia";
+                                    }
+                                    if (value.length < 6) {
+                                      return "A senha deve ter pelo menos 6 caracteres";
                                     }
                                     return null;
                                   },
@@ -206,37 +188,16 @@ class _ConfirmarAtendenteState extends State<ConfirmarAtendente> {
                                     setState(() {
                                       botaoPrincipalClicado();
                                     });
-                                  } else {
-                                    setState(() {
-                                      Navigator.pushReplacement(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                const LoginPageMenu(),
-                                          ));
-                                    });
                                   }
                                 },
                                 child: Text(
-                                    style: const TextStyle(fontSize: 20),
-                                    (queroEntrar) ? " Entrar" : "Sair"),
+                                    style: const TextStyle(
+                                        fontSize: 20, color: Colors.black),
+                                    " Entrar"),
                               ),
                               const SizedBox(
                                 height: 10,
                               ),
-                              TextButton(
-                                onPressed: () {
-                                  setState(() {
-                                    queroEntrar = !queroEntrar;
-                                  });
-                                },
-                                child: Text(
-                                    style: const TextStyle(
-                                        color: Colors.white, fontSize: 25),
-                                    (queroEntrar)
-                                        ? "Deseja Sair?"
-                                        : " Deseja Entrar?"),
-                              )
                             ],
                           ),
                         ),
@@ -273,27 +234,54 @@ class _ConfirmarAtendenteState extends State<ConfirmarAtendente> {
     );
   }
 
-  botaoPrincipalClicado() {
+  //verificação e validação de dados para execução do botão
+  botaoPrincipalClicado() async {
+    var usuarioAtual = FirebaseAuth.instance.currentUser;
+    var velue = emailControler.text;
     if (_formKey.currentState!.validate()) {
-      if (queroEntrar) {
+      if (queroEntrar || usuarioAtual != null) {
         debugPrint("Form valido");
-        _autenEnfermagem
+        await _autenMedico
             .logarUsuario(
                 email: emailControler.text, senha: senhaControler.text)
             .then((String? erro) {
           if (erro != null) {
             mostrarSnackBar(context: context, texto: erro);
           } else {
-            Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const MainPage(),
-                ));
+            if (velue.contains("medico")) {
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const MainPageMed(),
+                  ));
+            }
+            if (velue.contains("enferm")) {
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MainPageEnferm(),
+                  ));
+            } else {
+              if (velue.contains("atendent")) {
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => MainPageAtendent(),
+                    ));
+              }
+              if (velue.contains("triagem")) {
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => MainPageTriagem(),
+                    ));
+              }
+            }
           }
         });
       }
     } else {
-      debugPrint("Form valido");
+      debugPrint("Form invalido");
     }
   }
 }

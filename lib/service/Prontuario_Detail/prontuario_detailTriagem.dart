@@ -1,18 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_srh_application/model/prontuarioModel.dart';
-import 'package:flutter_srh_application/pages/pages_home/mainPage.dart';
+import 'package:flutter_srh_application/pages/pages_triagem/page_home/mainPageTriagem.dart';
 
-class ProntuarioDetail extends StatelessWidget {
-  const ProntuarioDetail({super.key});
+class ProntuarioDetailTriagem extends StatelessWidget {
+  const ProntuarioDetailTriagem({super.key});
 
   @override
   Widget build(BuildContext context) {
     var datacontole = TextEditingController();
     var dataNacimento = "";
     var cnscontrol = TextEditingController();
-    var sexoControle = TextEditingController();
-    var nomeControle = TextEditingController();
     var fcControle = TextEditingController(text: "");
     var paControle = TextEditingController();
     var taxControle = TextEditingController();
@@ -76,7 +74,9 @@ class ProntuarioDetail extends StatelessWidget {
                                         "CNS: ${prontuario.cns}"),
                                     TextFormField(
                                       keyboardType: TextInputType.number,
-                                      controller: cnscontrol,
+                                      initialValue: prontuario.cns,
+                                      enabled: true,
+                                      readOnly: true,
                                       decoration: const InputDecoration(
                                         enabledBorder: OutlineInputBorder(
                                             borderRadius: BorderRadius.all(
@@ -189,7 +189,7 @@ class ProntuarioDetail extends StatelessWidget {
                                             MainAxisAlignment.center,
                                         children: [
                                           SizedBox(
-                                            width: 70,
+                                            width: 60,
                                             child: TextFormField(
                                               controller: fcControle,
                                               decoration: const InputDecoration(
@@ -200,7 +200,7 @@ class ProntuarioDetail extends StatelessWidget {
                                             width: 25,
                                           ),
                                           SizedBox(
-                                            width: 70,
+                                            width: 60,
                                             child: TextFormField(
                                               controller: paControle,
                                               decoration: const InputDecoration(
@@ -211,7 +211,7 @@ class ProntuarioDetail extends StatelessWidget {
                                             width: 25,
                                           ),
                                           SizedBox(
-                                            width: 70,
+                                            width: 60,
                                             child: TextFormField(
                                               controller: taxControle,
                                               decoration: const InputDecoration(
@@ -222,7 +222,7 @@ class ProntuarioDetail extends StatelessWidget {
                                             width: 25,
                                           ),
                                           SizedBox(
-                                            width: 70,
+                                            width: 60,
                                             child: TextFormField(
                                               controller: rControle,
                                               decoration: const InputDecoration(
@@ -273,11 +273,11 @@ class ProntuarioDetail extends StatelessWidget {
                                                       context,
                                                       MaterialPageRoute(
                                                         builder: (context) =>
-                                                            MainPage(),
+                                                            MainPageTriagem(),
                                                       ));
                                                 },
                                                 child: const Text(
-                                                  "Sarir",
+                                                  "Sair",
                                                   style:
                                                       TextStyle(fontSize: 20),
                                                 )),
@@ -287,9 +287,9 @@ class ProntuarioDetail extends StatelessWidget {
                                                 onPressed: () async {
                                                   var updatePront =
                                                       ProntuarioModel(
-                                                    dtNacimento: DateTime.parse(
-                                                        datacontole.text),
-                                                    cns: cnscontrol.text,
+                                                    dtNacimento:
+                                                        prontuario.dtNacimento,
+                                                    cns: prontuario.cns,
                                                     nome: prontuario.nome,
                                                     sexo: prontuario.sexo,
                                                     fc: fcControle.text,
@@ -315,9 +315,11 @@ class ProntuarioDetail extends StatelessWidget {
                                                   );
                                                   await db
                                                       .collection("Prontuario")
-                                                      .doc(cnscontrol.text)
-                                                      .update(
-                                                          updatePront.toJson());
+                                                      .doc("Pacientes")
+                                                      .collection(
+                                                          "HistoricoMedico")
+                                                      .doc(e.id).update(updatePront.toJson());
+                                                      
                                                 },
                                                 child: const Text(
                                                   "Update",

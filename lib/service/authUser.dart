@@ -36,6 +36,6 @@ class AutentificacaoUsuario {
 
   //metodo de sair do usuário
   Future<void> deslogar() async {
-    return _firebaseAuth.signOut();
+     await _firebaseAuth.signOut();
   }
 }

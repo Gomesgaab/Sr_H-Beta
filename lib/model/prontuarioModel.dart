@@ -1,9 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 class ProntuarioModel {
   String? cns = "";
   String? nome = "";
-  DateTime? dtNacimento = DateTime.now();
+  String? dtNacimento = "";
   String? sexo = "";
   String? fc;
   String? pa;
@@ -16,7 +14,7 @@ class ProntuarioModel {
   String? prescricaoEnfermagem;
   String? horario = "";
   String? anotacaoEnfermagem;
-  bool salvar = false;
+  
 
   ProntuarioModel({
     this.cns,
@@ -39,7 +37,7 @@ class ProntuarioModel {
   ProntuarioModel.fromJson(Map<String, dynamic> json) {
     cns = json['cns'];
     nome = json['nome'];
-    dtNacimento = (json['dtNacimento'] as Timestamp).toDate();
+    dtNacimento = json['dtNacimento'];
     sexo = json['sexo'];
     fc = json['fc'];
     pa = json['pa'];
@@ -58,7 +56,7 @@ class ProntuarioModel {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['cns'] = this.cns;
     data['nome'] = this.nome;
-    data['dtNacimento'] = Timestamp.fromDate(this.dtNacimento!);
+    data['dtNacimento'] = this.dtNacimento!;
     data['sexo'] = this.sexo;
     data['fc'] = this.fc;
     data['pa'] = this.pa;
