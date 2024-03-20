@@ -13,9 +13,10 @@ class MainPageAtendent extends StatefulWidget {
 }
 
 class _MainPageAtendentState extends State<MainPageAtendent> {
-  int selectedindex = 0;
+  // selecionando o número da página que sera a index
+  int selectedindex = 1;
   final navigationKey = GlobalKey<CurvedNavigationBarState>();
-
+  //definindo páginas de navegação
   final screens = [
     PageUser(),
     PageProntuarioAtendent(),
@@ -57,13 +58,16 @@ class _MainPageAtendentState extends State<MainPageAtendent> {
             ),
           ],
         ),
-        //construindo body/corpo
+        
         body: screens[selectedindex],
-        //iniciando Navif=gation bar
+        //iniciando Navigationbar
         bottomNavigationBar: CurvedNavigationBar(
+          //chave de navegação
           key: NavBarKey.getkey(),
+          //fixando pá,gina index
           index: selectedindex,
           items: <Widget>[
+            //icones de navegação de pagina
             Icon(Icons.person_2, size: 30),
             Icon(Icons.dock, size: 30),
             Icon(Icons.home_filled, size: 30),

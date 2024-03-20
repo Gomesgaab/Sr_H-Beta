@@ -13,7 +13,9 @@ class MainPageMed extends StatefulWidget {
 }
 
 class _MainPageMedState extends State<MainPageMed> {
-  int selectedindex = 0;
+  //definindo página index
+  int selectedindex = 1;
+  //definindo páginas de navegação
   final screens = [
     PageUser(),
     PageProntuarioMed(),
@@ -28,8 +30,6 @@ class _MainPageMedState extends State<MainPageMed> {
           toolbarHeight: 120,
           backgroundColor: const Color.fromARGB(145, 200, 228, 1000),
           actions: [
-            // logo
-            
             Container(
               margin: EdgeInsets.only(left: 20),
               child: const Text(
@@ -37,6 +37,7 @@ class _MainPageMedState extends State<MainPageMed> {
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
               ),
             ),
+            // logo
             Expanded(child: Container()),
             Image.asset(
               'asset/Logo.png',
@@ -59,11 +60,14 @@ class _MainPageMedState extends State<MainPageMed> {
         //construindo body/corpo
         body: screens[selectedindex],
 
-        //iniciando Navif=gation bar
+        //iniciando Navgation bar
         bottomNavigationBar: CurvedNavigationBar(
+          //chave de controle 
           key: NavBarKey.getkey(),
+          //definindo página index
           index: selectedindex,
           items: <Widget>[
+            //icones de navegação
             Icon(Icons.person_2, size: 30),
             Icon(Icons.dock, size: 30),
             Icon(Icons.home_filled, size: 30),

@@ -28,6 +28,7 @@ class ProntuarioDetailTriagem extends StatelessWidget {
       body: Container(
         color: const Color.fromARGB(145, 200, 228, 1000),
         child: StreamBuilder<QuerySnapshot>(
+            //caminho para visualização de dados
             stream: db
                 .collection("Prontuario")
                 .doc("Pacientes")
@@ -285,6 +286,7 @@ class ProntuarioDetailTriagem extends StatelessWidget {
                                           Expanded(
                                             child: TextButton(
                                                 onPressed: () async {
+                                                  //definindo quais campos serão atualizados
                                                   var updatePront =
                                                       ProntuarioModel(
                                                     dtNacimento:
@@ -313,13 +315,22 @@ class ProntuarioDetailTriagem extends StatelessWidget {
                                                         anotacaoEnfermagemControler
                                                             .text,
                                                   );
+                                                  //caminho para atualização
                                                   await db
                                                       .collection("Prontuario")
                                                       .doc("Pacientes")
                                                       .collection(
                                                           "HistoricoMedico")
-                                                      .doc(e.id).update(updatePront.toJson());
-                                                      
+                                                      .doc(e.id)
+                                                      .update(
+                                                          updatePront.toJson())
+                                                      .then((value) => Navigator
+                                                          .pushReplacement(
+                                                              context,
+                                                              MaterialPageRoute(
+                                                                  builder:
+                                                                      (context) =>
+                                                                          MainPageTriagem())));
                                                 },
                                                 child: const Text(
                                                   "Update",
@@ -330,6 +341,10 @@ class ProntuarioDetailTriagem extends StatelessWidget {
                                         ],
                                       ),
                                     ),
+                                    Divider(
+                                      color: const Color.fromARGB(255, 0, 0, 0),
+                                      height: 15,
+                                    )
                                   ],
                                 ),
                               )),

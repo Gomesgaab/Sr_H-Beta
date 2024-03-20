@@ -16,8 +16,9 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  // iniciando intancia do fireBase
+  //
   AutentificacaoUsuario _autenMedico = AutentificacaoUsuario();
+  // iniciando intancia do fireBase FireStore
   final db = FirebaseFirestore.instance;
   var emailControler = TextEditingController();
   //criando variavel de controle de endereco
@@ -25,6 +26,7 @@ class _LoginPageState extends State<LoginPage> {
   bool isObscureText = true;
   //variavel de ação do botão entrar
   bool queroEntrar = true;
+  //variavel da chave de controle do formulário
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -52,20 +54,39 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   child: Column(
                     children: [
+                      Padding(
+                        padding: const EdgeInsets.all(9.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Image.asset(
+                              "asset/Logo.png",
+                              height: 70,
+                            ),
+                            const Text(
+                              "Sr.H",
+                              style:
+                                  TextStyle(fontSize: 30, color: Colors.white),
+                            )
+                          ],
+                        ),
+                      ),
                       Container(
-                        margin: const EdgeInsets.symmetric(vertical: 130),
+                        margin: const EdgeInsets.symmetric(vertical: 95),
                         width: double.infinity,
                       ),
                       //iniciando container email
                       Padding(
                         padding: const EdgeInsets.all(20),
                         child: Form(
+                          //chave de formulário
                           key: _formKey,
                           child: Column(
                             children: [
                               SizedBox(
                                 width: 260,
                                 child: TextFormField(
+                                  //controle de entrada de dados
                                   controller: emailControler,
                                   keyboardType: TextInputType.emailAddress,
                                   decoration: InputDecoration(
@@ -83,6 +104,7 @@ class _LoginPageState extends State<LoginPage> {
                                     suffixIcon: GestureDetector(
                                       onTap: () {
                                         setState(() {
+                                          //limpar caixa der texto
                                           emailControler.clear();
                                         });
                                       },
@@ -91,21 +113,22 @@ class _LoginPageState extends State<LoginPage> {
                                     contentPadding:
                                         const EdgeInsets.only(top: 0, left: 20),
                                   ),
-                                  //falidando campo
+                                  //validando campo
                                   validator: (
                                     String? value,
                                   ) {
+                                    //validação de campo vazio
                                     if (value == null) {
                                       return "O em-mail não pode ser vazio";
                                     }
-
+                                    //validação de tamanho
                                     if (value.length < 5) {
                                       return "E-mail deve conter mais de cinco caaracteres";
                                     }
+                                    //validação de e-mail
                                     if (!value.contains("@")) {
                                       return "O e-mail informado não e valido";
                                     }
-
                                     return null;
                                   },
                                 ),
@@ -119,6 +142,7 @@ class _LoginPageState extends State<LoginPage> {
                                 child: TextFormField(
                                   style: const TextStyle(
                                       fontSize: 18, color: Colors.black),
+                                  //controle de senha
                                   controller: senhaControler,
                                   obscureText: isObscureText,
                                   onChanged: (value) {
@@ -163,9 +187,11 @@ class _LoginPageState extends State<LoginPage> {
                                       ),
                                       label: const Text("Senha")),
                                   validator: (value) {
+                                    //validação de campo vazio
                                     if (value == null) {
                                       return "a senha não pode ser vazia";
                                     }
+                                    //validação de tamanho da senha com exigência do fireauth
                                     if (value.length < 6) {
                                       return "A senha deve ter pelo menos 6 caracteres";
                                     }
@@ -184,6 +210,7 @@ class _LoginPageState extends State<LoginPage> {
                                       left: 60, right: 60),
                                 ),
                                 onPressed: () {
+                                  //validando acesso
                                   if (queroEntrar = queroEntrar) {
                                     setState(() {
                                       botaoPrincipalClicado();
@@ -202,27 +229,6 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ),
                       ),
-                      Expanded(
-                        flex: 1,
-                        child: Padding(
-                          padding: const EdgeInsets.all(9.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Image.asset(
-                                "asset/Logo.png",
-                                height: 70,
-                              ),
-                              const Text(
-                                "Sr.H",
-                                style: TextStyle(
-                                  fontSize: 30,
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
                     ],
                   ),
                 ),
@@ -236,18 +242,24 @@ class _LoginPageState extends State<LoginPage> {
 
   //verificação e validação de dados para execução do botão
   botaoPrincipalClicado() async {
+    //chamando instancia do fireauth
     var usuarioAtual = FirebaseAuth.instance.currentUser;
     var velue = emailControler.text;
+    //se chave de controle de formulário ativa velirificar validações
     if (_formKey.currentState!.validate()) {
+      //se quero entrar verdadeiro ou usuário atual diferente de null form valido
       if (queroEntrar || usuarioAtual != null) {
         debugPrint("Form valido");
+        //chamando controle de login de usuário 
         await _autenMedico
             .logarUsuario(
                 email: emailControler.text, senha: senhaControler.text)
             .then((String? erro) {
           if (erro != null) {
+            //mostrando erro 
             mostrarSnackBar(context: context, texto: erro);
           } else {
+            //validação de modelo de entrada como médico
             if (velue.contains("medico")) {
               Navigator.pushReplacement(
                   context,
@@ -255,6 +267,7 @@ class _LoginPageState extends State<LoginPage> {
                     builder: (context) => const MainPageMed(),
                   ));
             }
+            //validação de modelo de entrada como enfermagem
             if (velue.contains("enferm")) {
               Navigator.pushReplacement(
                   context,
@@ -262,6 +275,7 @@ class _LoginPageState extends State<LoginPage> {
                     builder: (context) => MainPageEnferm(),
                   ));
             } else {
+              //validação de modelo de entrada como atendente
               if (velue.contains("atendent")) {
                 Navigator.pushReplacement(
                     context,
@@ -269,6 +283,7 @@ class _LoginPageState extends State<LoginPage> {
                       builder: (context) => MainPageAtendent(),
                     ));
               }
+              //validação de modelo de entrada como triagem
               if (velue.contains("triagem")) {
                 Navigator.pushReplacement(
                     context,
@@ -281,6 +296,7 @@ class _LoginPageState extends State<LoginPage> {
         });
       }
     } else {
+      //se falso não direciona para lugar nenhum
       debugPrint("Form invalido");
     }
   }

@@ -13,7 +13,9 @@ class MainPageTriagem extends StatefulWidget {
 }
 
 class _MainPageTriagemState extends State<MainPageTriagem> {
-  int selectedindex = 0;
+  //definição do numero da página index
+  int selectedindex = 1;
+  //definindo páginas de navegação 
   final screens = [
     PageUser(),
     PageProntuarioTriagem(),
@@ -57,11 +59,14 @@ class _MainPageTriagemState extends State<MainPageTriagem> {
         //construindo body/corpo
         body: screens[selectedindex],
 
-        //iniciando Navif=gation bar
+        //iniciando Navgation bar
         bottomNavigationBar: CurvedNavigationBar(
+          //chave de controle 
           key: NavBarKey.getkey(),
+          // definição de página index
           index: selectedindex,
           items: <Widget>[
+            //icones de navegação
             Icon(Icons.person_2, size: 30),
             Icon(Icons.dock, size: 30),
             Icon(Icons.home_filled, size: 30),

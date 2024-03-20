@@ -1,5 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
-
+//cadastro de usuário
 class AutentificacaoUsuario {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   String? cadastroUsuario({

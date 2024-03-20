@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_srh_application/model/prontuarioModel.dart';
-import 'package:flutter_srh_application/shared/componentes/snackbar.dart';
 
 class FormProntuarioAtendente extends StatefulWidget {
   FormProntuarioAtendente({super.key});
@@ -14,9 +13,9 @@ class FormProntuarioAtendente extends StatefulWidget {
 class _FormProntuarioAtendenteState extends State<FormProntuarioAtendente> {
   //validação do formulario e criação de chave de controle
   final _formKey = GlobalKey<FormState>();
-
   bool queroEntrar = true;
   final db = FirebaseFirestore.instance;
+
   var datacontole = TextEditingController(text: "");
   var dataNacimento = "";
   var cnscontrol = TextEditingController();
@@ -54,8 +53,8 @@ class _FormProntuarioAtendenteState extends State<FormProntuarioAtendente> {
                 contentPadding: EdgeInsets.only(top: 0, left: 10),
               ),
               validator: (String? value) {
-                if (value == null) {
-                  return "O campo CNS não pode ser vazio";
+                if (value.toString().length < 15) {
+                  return "CSN invalido, CNS deve conter pelo menos 15 dígitos";
                 }
                 return null;
               },
@@ -66,7 +65,7 @@ class _FormProntuarioAtendenteState extends State<FormProntuarioAtendente> {
                 controller: nomeControle,
                 decoration: const InputDecoration(hintText: "Nome "),
                 validator: (String? value) {
-                  if (value == null) {
+                  if (value == "") {
                     return "O campo Nome não pode ser vazio";
                   }
                   return null;
@@ -87,16 +86,15 @@ class _FormProntuarioAtendenteState extends State<FormProntuarioAtendente> {
                       //Seleção de data
                       var data = await showDatePicker(
                           context: context,
-                          firstDate: DateTime(1900, 1, 1),
-                          initialDate: DateTime(2000, 1, 1),
-                          lastDate: DateTime(2023, 12, 31));
+                          firstDate: DateTime.utc(1900, 1, 1),
+                          initialDate: DateTime.utc(2000, 1, 1),
+                          lastDate: DateTime.utc(2023, 12, 31));
                       if (data != null) {
                         datacontole.text = data.toString();
-                        dataNacimento = data.timeZoneName;
                       }
                     },
                     validator: (String? value) {
-                      if (value == null) {
+                      if (value == "") {
                         return "O campo Data não pode ser vazio";
                       }
                       return null;
@@ -112,7 +110,7 @@ class _FormProntuarioAtendenteState extends State<FormProntuarioAtendente> {
                     controller: sexoControle,
                     decoration: const InputDecoration(hintText: "Sexo"),
                     validator: (value) {
-                      if (value == null) {
+                      if (value == "") {
                         return "O campo Sexo não pode ser vazio";
                       }
                       return null;
@@ -141,16 +139,8 @@ class _FormProntuarioAtendenteState extends State<FormProntuarioAtendente> {
                     flex: 0,
                     child: TextButton(
                         onPressed: () async {
-                          //fechando tela
-                          Navigator.pop(context);
                           //coletando e enviando dados ao bd
                           botaoPrincipalClicado();
-                          //limpando variaveis
-
-                          cnscontrol.text = "";
-                          nomeControle.text = "";
-                          sexoControle.text = "";
-                          datacontole.text = "";
                         },
                         child: const Text("Salvar")),
                   )
@@ -188,13 +178,18 @@ class _FormProntuarioAtendenteState extends State<FormProntuarioAtendente> {
             .collection("HistoricoMedico")
             .doc()
             .set(prontuario.toJson())
-            .onError(
-          (error, stackTrace) {
-            if (error == null) {
-              mostrarSnackBar(context: context, texto: error.toString());
+            .then(
+          (value) {
+            if (queroEntrar) {
+              Navigator.pop(context);
             }
           },
         );
+        //limpando variaveis
+        cnscontrol.text = "";
+        nomeControle.text = "";
+        sexoControle.text = "";
+        datacontole.text = "";
       }
     }
   }

@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_srh_application/model/prontuarioModel.dart';
-import 'package:flutter_srh_application/service/Prontuario_Detail/prontuario_detail%20Medico.dart';
+import 'package:flutter_srh_application/service/Prontuario_Detail/prontuario_detailmed.dart';
 import 'package:flutter_srh_application/shared/form_prontuario/form_prntuario.dart';
 
 class PageProntuarioMed extends StatefulWidget {
@@ -45,6 +45,7 @@ class _PageProntuarioMedState extends State<PageProntuarioMed> {
       body: Container(
         color: const Color.fromARGB(145, 200, 228, 1000),
         child: StreamBuilder<QuerySnapshot>(
+            //definindo caminho de coleção para visualização de dados
             stream: db
                 .collection("Prontuario")
                 .doc("Pacientes")
@@ -67,7 +68,7 @@ class _PageProntuarioMedState extends State<PageProntuarioMed> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) =>
-                                      const ProntuarioDetailMed(),
+                                       PRontuarioDetailMed(),
                                 ));
                           },
                           child: Card(
@@ -85,26 +86,60 @@ class _PageProntuarioMedState extends State<PageProntuarioMed> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Container(
-                                        margin: EdgeInsets.only(top: 10),
-                                        child: Text(
-                                            style:
-                                                const TextStyle(fontSize: 23),
-                                            "${prontuario.nome!}"),
+                                        margin:
+                                            EdgeInsets.only(top: 10, left: 10),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              "Paciente",
+                                              style: TextStyle(
+                                                fontSize: 18,
+                                              ),
+                                            ),
+                                            Text(
+                                                style: const TextStyle(
+                                                    fontSize: 23),
+                                                "${prontuario.nome!}"),
+                                          ],
+                                        ),
                                       ),
                                       Container(
-                                        margin: EdgeInsets.only(top: 10),
-                                        child: Text(
-                                            style:
-                                                const TextStyle(fontSize: 20),
-                                            "${prontuario.cns!}"),
+                                        margin:
+                                            EdgeInsets.only(top: 10, left: 10),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              "CNS",
+                                              style: TextStyle(fontSize: 18),
+                                            ),
+                                            Text(
+                                                style: const TextStyle(
+                                                    fontSize: 20),
+                                                "${prontuario.cns!}"),
+                                          ],
+                                        ),
                                       ),
                                       Container(
                                         margin: EdgeInsets.only(
-                                            bottom: 10, top: 10),
-                                        child: Text(
-                                            style:
-                                                const TextStyle(fontSize: 20),
-                                            "${prontuario.dtNacimento}"),
+                                            bottom: 10, top: 10, left: 10),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              "Data de Nascimento",
+                                              style: TextStyle(fontSize: 18),
+                                            ),
+                                            Text(
+                                                style: const TextStyle(
+                                                    fontSize: 20),
+                                                "${prontuario.dtNacimento}"),
+                                          ],
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -115,6 +150,7 @@ class _PageProntuarioMedState extends State<PageProntuarioMed> {
                     }).toList());
             }),
       ),
+      //botão de criação de prontuário
       floatingActionButton: FloatingActionButton(
           onPressed: () {
             showDialog(

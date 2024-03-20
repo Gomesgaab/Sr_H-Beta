@@ -12,9 +12,9 @@ class PageProntuarioEnferm extends StatefulWidget {
 }
 
 class _PageProntuarioEnfermState extends State<PageProntuarioEnferm> {
+  //chamando instanci do firebase firestore
   final db = FirebaseFirestore.instance;
-  var collection = FirebaseFirestore.instance.collection('Prontuario');
-  //validação do formulario e criação de chave de controle
+  
 
   var datacontole = TextEditingController(text: "");
   var dataNacimento = "";
@@ -33,11 +33,7 @@ class _PageProntuarioEnfermState extends State<PageProntuarioEnferm> {
   var horarioControler = TextEditingController();
   var anotacaoEnfermagemControler = TextEditingController();
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-  }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -45,6 +41,7 @@ class _PageProntuarioEnfermState extends State<PageProntuarioEnferm> {
       body: Container(
         color: const Color.fromARGB(145, 200, 228, 1000),
         child: StreamBuilder<QuerySnapshot>(
+          //definindo caminho para visualização de dados
             stream: db
                 .collection("Prontuario")
                 .doc("Pacientes")
@@ -81,29 +78,67 @@ class _PageProntuarioEnfermState extends State<PageProntuarioEnferm> {
                                   margin: const EdgeInsets.symmetric(
                                       vertical: 10, horizontal: 10),
                                   child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                      margin: EdgeInsets.only(top: 10),
-                                      child: Text(
-                                          style: const TextStyle(fontSize: 23),
-                                          "${prontuario.nome!}"),
-                                    ),
-                                    Container(
-                                      margin:
-                                          EdgeInsets.only(top: 10),
-                                      child: Text(
-                                          style: const TextStyle(fontSize: 20),
-                                          "${prontuario.cns!}"),
-                                    ),
-                                    Container(
-                                      margin: EdgeInsets.only(bottom: 10, top: 10),
-                                      child: Text(
-                                          style: const TextStyle(fontSize: 20),
-                                          "${prontuario.dtNacimento}"),
-                                    ),
-                                  ],
-                                ),
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        margin:
+                                            EdgeInsets.only(top: 10, left: 10),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              "Paciente",
+                                              style: TextStyle(
+                                                fontSize: 18,
+                                              ),
+                                            ),
+                                            Text(
+                                                style: const TextStyle(
+                                                    fontSize: 23),
+                                                "${prontuario.nome!}"),
+                                          ],
+                                        ),
+                                      ),
+                                      Container(
+                                        margin:
+                                            EdgeInsets.only(top: 10, left: 10),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              "CNS",
+                                              style: TextStyle(fontSize: 18),
+                                            ),
+                                            Text(
+                                                style: const TextStyle(
+                                                    fontSize: 20),
+                                                "${prontuario.cns!}"),
+                                          ],
+                                        ),
+                                      ),
+                                      Container(
+                                        margin: EdgeInsets.only(
+                                            bottom: 10, top: 10, left: 10),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              "Data de Nascimento",
+                                              style: TextStyle(fontSize: 18),
+                                            ),
+                                            Text(
+                                                style: const TextStyle(
+                                                    fontSize: 20),
+                                                "${prontuario.dtNacimento}"),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 )),
                           ),
                         ),
@@ -111,6 +146,7 @@ class _PageProntuarioEnfermState extends State<PageProntuarioEnferm> {
                     }).toList());
             }),
       ),
+      //botão de criação de prontuario
       floatingActionButton: FloatingActionButton(
           onPressed: () {
             showDialog(
@@ -121,9 +157,7 @@ class _PageProntuarioEnfermState extends State<PageProntuarioEnferm> {
                     AlertDialog.adaptive(
                       backgroundColor: const Color.fromARGB(255, 200, 228, 232),
                       title: const Text(" prontuario"),
-                      actions: [
-                        FormProntuario()
-                      ],
+                      actions: [FormProntuario()],
                     ),
                   ],
                 );

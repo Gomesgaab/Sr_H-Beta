@@ -13,12 +13,14 @@ class MainPageEnferm extends StatefulWidget {
 }
 
 class _MainPageEnfermState extends State<MainPageEnferm> {
+  //definindo páginas de paginação
   final screens = [
     PageUser(),
     PageProntuarioEnferm(),
     PagePastepront(),
   ];
-  int selectedindex = 0;
+  //definindo número da pagina index
+  int selectedindex = 1;
   @override
   Widget build(BuildContext context) {
     //area  separada
@@ -54,14 +56,17 @@ class _MainPageEnfermState extends State<MainPageEnferm> {
             ),
           ],
         ),
-        //construindo body/corpo
+        
         body: screens[selectedindex],
 
-        //iniciando Navif=gation bar
+        //iniciando Navgation bar
         bottomNavigationBar: CurvedNavigationBar(
+          //chave de controle
           key: NavBarKey.getkey(),
+          //selecionando página index
           index: selectedindex,
           items: <Widget>[
+            //icones de navegação
             Icon(Icons.person_2, size: 30),
             Icon(Icons.dock, size: 30),
             Icon(Icons.home_filled, size: 30),

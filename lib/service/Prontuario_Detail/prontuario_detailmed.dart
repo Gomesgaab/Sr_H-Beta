@@ -2,15 +2,18 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_srh_application/model/prontuarioModel.dart';
 import 'package:flutter_srh_application/pages/pages_Enfermagem/page_home/mainPageEnferm.dart';
+import 'package:flutter_srh_application/pages/pages_Medico/page_home/mainPageMed.dart';
 
-class ProntuarioDetailEnferm extends StatelessWidget {
-  const ProntuarioDetailEnferm({super.key});
+class PRontuarioDetailMed extends StatelessWidget {
+  const PRontuarioDetailMed({super.key});
 
   @override
   Widget build(BuildContext context) {
     var datacontole = TextEditingController();
     var dataNacimento = "";
     var cnscontrol = TextEditingController();
+    var anamneseControler = TextEditingController();
+    var prescricaoMedicaControler = TextEditingController();
     var prescricaoEnfermagemControler = TextEditingController();
     var horarioControler = TextEditingController();
     var anotacaoEnfermagemControler = TextEditingController();
@@ -20,7 +23,7 @@ class ProntuarioDetailEnferm extends StatelessWidget {
       body: Container(
         color: const Color.fromARGB(145, 200, 228, 1000),
         child: StreamBuilder<QuerySnapshot>(
-          //caminho para visualização de dados
+            //caminho para visualização de dados
             stream: db
                 .collection("Prontuario")
                 .doc("Pacientes")
@@ -279,43 +282,20 @@ class ProntuarioDetailEnferm extends StatelessWidget {
                                             style: TextStyle(fontSize: 25),
                                           ),
                                           TextFormField(
-                                            initialValue: prontuario.anamnese,
-                                            enabled: true,
-                                            readOnly: true,
+                                            controller: anamneseControler,
                                             decoration: const InputDecoration(
                                               label: Text("anamnse:"),
                                             ),
                                           ),
                                           TextFormField(
-                                            initialValue:
-                                                prontuario.prescricaoMedica,
-                                            readOnly: true,
-                                            enabled: true,
+                                            controller:
+                                                prescricaoMedicaControler,
                                             decoration: InputDecoration(
                                                 label:
                                                     Text("Prescrição Médica:")),
                                           ),
                                         ],
                                       ),
-                                    ),
-                                    Container(
-                                      margin: EdgeInsets.only(top: 15),
-                                      child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            Text("Enfermagem",
-                                                style: TextStyle(fontSize: 25)),
-                                            TextFormField(
-                                              controller:
-                                                  prescricaoEnfermagemControler,
-                                              decoration: InputDecoration(
-                                                  label: Text(
-                                                      "Prescrição Enfermagem")),
-                                            )
-                                          ]),
                                     ),
                                     Container(
                                       margin: const EdgeInsets.only(top: 10),
@@ -356,9 +336,8 @@ class ProntuarioDetailEnferm extends StatelessWidget {
                                                     sintomas:
                                                         prontuario.sintomas,
                                                     anamnese:
-                                                        prontuario.anamnese,
-                                                    prescricaoMedica: prontuario
-                                                        .prescricaoMedica,
+                                                        anamneseControler.text,
+                                                    prescricaoMedica: prescricaoMedicaControler.text,
                                                     prescricaoEnfermagem:
                                                         prescricaoEnfermagemControler
                                                             .text,
@@ -383,7 +362,7 @@ class ProntuarioDetailEnferm extends StatelessWidget {
                                                               MaterialPageRoute(
                                                                   builder:
                                                                       (context) =>
-                                                                          MainPageEnferm())));
+                                                                          MainPageMed())));
                                                 },
                                                 child: const Text(
                                                   "Update",

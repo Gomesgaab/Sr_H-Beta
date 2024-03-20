@@ -1,32 +1,39 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_srh_application/model/prontuarioModel.dart';
 
-class FormProntuario extends StatelessWidget {
+class FormProntuario extends StatefulWidget {
   const FormProntuario({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final db = FirebaseFirestore.instance;
+  State<FormProntuario> createState() => _FormProntuarioState();
+}
 
-    var datacontole = TextEditingController(text: "");
-    var dataNacimento = "";
-    var cnscontrol = TextEditingController();
-    var nomeControle = TextEditingController();
-    var sexoControle = TextEditingController();
-    var fcControle = TextEditingController(text: "");
-    var paControle = TextEditingController();
-    var taxControle = TextEditingController();
-    var rControle = TextEditingController();
-    var dxControle = TextEditingController();
-    var sintomasControle = TextEditingController();
-    var anamneseControler = TextEditingController();
-    var prescricaoMedicaControler = TextEditingController();
-    var prescricaoEnfermagemControler = TextEditingController();
-    var horarioControler = TextEditingController();
-    var anotacaoEnfermagemControler = TextEditingController();
+class _FormProntuarioState extends State<FormProntuario> {
+  final db = FirebaseFirestore.instance;
+  bool queroEntrar = true;
+  final _formKey = GlobalKey<FormState>();
+
+  var datacontole = TextEditingController(text: "");
+  var dataNacimento = "";
+  var cnscontrol = TextEditingController();
+  var nomeControle = TextEditingController();
+  var sexoControle = TextEditingController();
+  var fcControle = TextEditingController(text: "");
+  var paControle = TextEditingController();
+  var taxControle = TextEditingController();
+  var rControle = TextEditingController();
+  var dxControle = TextEditingController();
+  var sintomasControle = TextEditingController();
+  var anamneseControler = TextEditingController();
+  var prescricaoMedicaControler = TextEditingController();
+  var prescricaoEnfermagemControler = TextEditingController();
+  var horarioControler = TextEditingController();
+  var anotacaoEnfermagemControler = TextEditingController();
+  @override
+  Widget build(BuildContext context) {
     return Form(
+      key: _formKey,
         child: Column(
       children: [
         TextFormField(
@@ -41,13 +48,27 @@ class FormProntuario extends StatelessWidget {
             filled: true,
             hintText: "CNS:",
             contentPadding: EdgeInsets.only(top: 0, left: 10),
+
           ),
+          validator: (value) {
+            if (value.toString().length < 15) {
+              return "CNS invalido, O CNS deve conter pelo menos 15 dígitos";
+            }
+            
+            return null;
+          },
         ),
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 10),
           child: TextFormField(
             controller: nomeControle,
             decoration: const InputDecoration(hintText: "Nome "),
+            validator: (value) {
+              if (value == "") {
+                return "Campo nao pode ser vazio";
+              }
+              return null;
+            },
           ),
         ),
         Row(
@@ -63,15 +84,20 @@ class FormProntuario extends StatelessWidget {
                   //Seleção de data
                   var data = await showDatePicker(
                       context: context,
-                      
-                      firstDate: DateTime(1900, 1, 1),
-                      initialDate: DateTime(2000, 1, 1),
-                      lastDate: DateTime(2023, 12, 31));
-                      
+                      firstDate: DateTime.utc(1900, 1, 1),
+                      initialDate: DateTime.utc(2000, 1, 1),
+                      lastDate: DateTime.utc(2023, 12, 31));
+
                   if (data != null) {
                     datacontole.text = data.toString();
                     dataNacimento = data.year.toString();
                   }
+                },
+                validator: (value) {
+                  if (value == "") {
+                    return "O campo data não pode ser vazio";
+                  }
+                  return null;
                 },
               ),
             ),
@@ -83,6 +109,12 @@ class FormProntuario extends StatelessWidget {
               child: TextFormField(
                 controller: sexoControle,
                 decoration: const InputDecoration(hintText: "Sexo"),
+                validator: (value) {
+                  if (value == "") {
+                    return "O campo sexo não poder ser vazio";
+                  }
+                  return null;
+                },
               ),
             )
           ],
@@ -190,39 +222,7 @@ class FormProntuario extends StatelessWidget {
                 flex: 0,
                 child: TextButton(
                     onPressed: () async {
-                      //fechando tela
-                      Navigator.pop(context);
-                      //coletando e enviando dados ao bd
-                      var prontuario = ProntuarioModel(
-                        cns: cnscontrol.text,
-                        nome: nomeControle.text,
-                        dtNacimento: datacontole.text,
-                        sexo: sexoControle.text,
-                        fc: fcControle.text,
-                        pa: paControle.text,
-                        tax: taxControle.text,
-                        r: rControle.text,
-                        dx: dxControle.text,
-                        sintomas: sintomasControle.text,
-                        anamnese: anamneseControler.text,
-                        prescricaoMedica: prescricaoMedicaControler.text,
-                        prescricaoEnfermagem:
-                            prescricaoEnfermagemControler.text,
-                        horario: horarioControler.text,
-                        anotacaoEnfermagem: anotacaoEnfermagemControler.text,
-                      );
-                      await db
-                          .collection("Prontuario")
-                          .doc("Pacientes")
-                          .collection("HistoricoMedico")
-                          .doc()
-                          .set(prontuario.toJson());
-                      //limpando variaveis
-
-                      cnscontrol.text = "";
-                      nomeControle.text = "";
-                      sexoControle.text = "";
-                      datacontole.text = "";
+                      botaoPrincipal();
                     },
                     child: const Text("Salvar")),
               )
@@ -231,5 +231,41 @@ class FormProntuario extends StatelessWidget {
         ),
       ],
     ));
+  }
+
+  botaoPrincipal() async {
+    if (queroEntrar) {
+      if (_formKey.currentState!.validate()) {
+        //coletando e enviando dados ao bd
+        var prontuario = ProntuarioModel(
+          cns: cnscontrol.text,
+          nome: nomeControle.text,
+          dtNacimento: datacontole.text,
+          sexo: sexoControle.text,
+          fc: fcControle.text,
+          pa: paControle.text,
+          tax: taxControle.text,
+          r: rControle.text,
+          dx: dxControle.text,
+          sintomas: sintomasControle.text,
+          anamnese: anamneseControler.text,
+          prescricaoMedica: prescricaoMedicaControler.text,
+          prescricaoEnfermagem: prescricaoEnfermagemControler.text,
+          horario: horarioControler.text,
+          anotacaoEnfermagem: anotacaoEnfermagemControler.text,
+        );
+        await db
+            .collection("Prontuario")
+            .doc("Pacientes")
+            .collection("HistoricoMedico")
+            .doc()
+            .set(prontuario.toJson()).then((value) => Navigator.pop(context));
+        //limpando variaveis
+        cnscontrol.text = "";
+        nomeControle.text = "";
+        sexoControle.text = "";
+        datacontole.text = "";
+      }
+    }
   }
 }
